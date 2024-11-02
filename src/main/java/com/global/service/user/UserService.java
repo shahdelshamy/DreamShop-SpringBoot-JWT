@@ -30,6 +30,7 @@ public class UserService implements UserInterface{
 		new ResourceNotFoundException("The User Not Found")
 		);
 		return this.convertToUserDto(user);
+		
 	}
 
 	@Override
