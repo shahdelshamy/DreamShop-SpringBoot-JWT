@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.global.DTO.UserDto;
 import com.global.exceptions.AlreadyExistExeption;
 import com.global.exceptions.ResourceNotFoundException;
+import com.global.models.User;
 import com.global.requests.UserRequest;
 import com.global.requests.UserUpdateRequest;
 import com.global.response.ApiResponse;
@@ -30,7 +31,8 @@ public class UserController {
 	@PostMapping("/add")
 	public ResponseEntity<ApiResponse>addUser(@RequestBody  UserRequest request){
 		try {
-			UserDto userDto=userService.createUser(request);
+			User user=userService.createUser(request);
+			UserDto userDto=userService.convertToUserDto(user);
 			return ResponseEntity.ok(new ApiResponse("User IS Added", userDto));
 		} catch (AlreadyExistExeption e) {
 			return ResponseEntity.ok(new ApiResponse(e.getMessage(), null));
@@ -41,7 +43,8 @@ public class UserController {
 	@PutMapping("/update")
 	public ResponseEntity<ApiResponse>updateUser(@RequestBody UserUpdateRequest request,@RequestParam int userId){
 		try {
-			UserDto userDto=userService.updateUser(request, userId);
+			User user=userService.updateUser(request, userId);
+			UserDto userDto=userService.convertToUserDto(user);
 			return ResponseEntity.ok(new ApiResponse("User IS Updated", userDto));
 		} catch (ResourceNotFoundException e) {
 			return ResponseEntity.ok(new ApiResponse(e.getMessage(), null));
@@ -51,14 +54,15 @@ public class UserController {
 	@GetMapping("/{userId}/get")
 	public ResponseEntity<ApiResponse>getUser(@PathVariable int userId){
 		try {
-			UserDto userDto=userService.getUserById(userId);
+			User user=userService.getUserById(userId);
+			UserDto userDto=userService.convertToUserDto(user);
 			return ResponseEntity.ok(new ApiResponse("Sucess", userDto));
 		} catch (ResourceNotFoundException e) {
 			return ResponseEntity.ok(new ApiResponse(e.getMessage(), null));
 		}
 	}
 	
-	@DeleteMapping("/{userId}/get")
+	@DeleteMapping("/{userId}/delete")
 	public ResponseEntity<ApiResponse>deleteUser(@PathVariable int userId){
 		try {
 			userService.deleteUser(userId);

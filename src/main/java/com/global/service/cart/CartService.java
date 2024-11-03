@@ -1,5 +1,6 @@
 package com.global.service.cart;
 
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,7 +8,9 @@ import org.springframework.stereotype.Service;
 
 import com.global.exceptions.ResourceNotFoundException;
 import com.global.models.Cart;
+import com.global.models.User;
 import com.global.repositories.CartRepository;
+import com.global.requests.UserRequest;
 
 import jakarta.transaction.Transactional;
 
@@ -67,14 +70,27 @@ public class CartService implements CartInterface{
 	}
 
 
-	@Override
-	public int initializeCartId() {
-		Cart cart=new Cart();
-		cart.setId(uniqueNumber.getAndIncrement());
-		cartRepository.save(cart);
-		return cart.getId();
-	}
+//	@Override
+//	public int initializeCartId() {
+//		Cart cart=new Cart();
+//		cart.setId(uniqueNumber.getAndIncrement());
+//		cartRepository.save(cart);
+//		return cart.getId();
+//	}
 	
+	
+	@Override
+	public Cart initializeCart(User user ) {
+		Optional<Cart>cartOptional=  cartRepository.findByUserId(user.getId());
+		if(cartOptional.isEmpty()) {
+			Cart cart =new Cart();
+			cart.setId(uniqueNumber.getAndIncrement());
+			cart.setUser(user);
+			return cartRepository.save(cart);
+		}else {
+			return cartOptional.get();
+		}
+	}
 	
 
 }

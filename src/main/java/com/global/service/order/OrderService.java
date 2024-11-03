@@ -1,13 +1,16 @@
 package com.global.service.order;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.function.Function;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.global.DTO.OrderDto;
 import com.global.DTO.UserDto;
 import com.global.enums.OrderStatus;
 import com.global.exceptions.ResourceNotFoundException;
@@ -41,13 +44,17 @@ public class OrderService implements OrderInterface{
 	@Autowired
 	private ProductRepository productRepository;
 	
+	@Autowired
+	private ModelMapper modelMapper;
 	
 	
 	@Override
 	public Order placeOrder(int userId) {
-		Cart cart=cartRepository.findByUserId(userId);
+		Cart cart=cartRepository.findByUserId(userId).
+				orElseThrow(() -> new ResourceNotFoundException("Cart not found for user with ID: " + userId));
 		Order order=createOrder(cart);
 		List<OrderItem>orderItems=getOrderItem(order,cart);
+		order.setUser(userService.getUserById(userId));
 		order.setOrderItems(new HashSet<>(orderItems));
 		order.setTotalPrice(cart.getTotalAmountPrice());
 		Order orderSaved=orderRepository.save(order);
@@ -75,7 +82,7 @@ public class OrderService implements OrderInterface{
 	private Order createOrder(Cart cart) {
 		Order order=new Order();
 		order.setOrderStatus(OrderStatus.PINDING);
-		order.setOderDate(new Date());
+		order.setOrderDate(LocalDate.now());;
 		return order;
 	}
 
@@ -88,8 +95,14 @@ public class OrderService implements OrderInterface{
 
 	@Override
 	public List<Order> getUserOrders(int userId) {
-		UserDto user=userService.getUserById(userId);
+		User user=userService.getUserById(userId);
 		return orderRepository.findByUserId(userId);
 	}
+	
+	public OrderDto convertToOrderDto(Order order) {
+		return modelMapper.map(order, OrderDto.class);
+	}
+	
+	
 
 }

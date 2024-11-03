@@ -1,5 +1,6 @@
 package com.global.controllers;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,16 +14,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.global.DTO.OrderDto;
 import com.global.exceptions.ResourceNotFoundException;
 import com.global.models.Order;
 import com.global.response.ApiResponse;
 import com.global.service.order.OrderService;
 
+import static org.springframework.http.HttpStatus.NOT_FOUND;
+
 @RestController
 @RequestMapping("/api/order")
 public class OrderController {
 	
-	private static final HttpStatusCode Not_FOUND = null;
 	@Autowired
 	private OrderService orderService;
 	
@@ -30,9 +33,10 @@ public class OrderController {
 	public ResponseEntity<ApiResponse>createOrder(@RequestParam int userId){
 		try {
 			Order order=orderService.placeOrder(userId);
-			return ResponseEntity.ok(new ApiResponse("Order Creating Sucessful",order));
-		} catch (Exception e) {
-			return ResponseEntity.status(Not_FOUND).body(new ApiResponse("Error",null));
+			//OrderDto orderDto=orderService.convertToOrderDto(order);
+			return ResponseEntity.ok(new ApiResponse("Order Creating Sucessful",null));
+		} catch (ResourceNotFoundException e) {
+			return ResponseEntity.status(NOT_FOUND).body(new ApiResponse("Error",null));
 		}
 	}
 	
@@ -40,7 +44,8 @@ public class OrderController {
 	public ResponseEntity<ApiResponse>getOrder(@PathVariable int orderId){
 		try {
 			Order order=orderService.getOrderById(orderId);
-			return ResponseEntity.ok(new ApiResponse("Order Sucess",order));
+			OrderDto orderDto=orderService.convertToOrderDto(order);
+			return ResponseEntity.ok(new ApiResponse("Order Sucess",orderDto));
 		} catch (ResourceNotFoundException e) {
 			return ResponseEntity.ok(new ApiResponse(e.getMessage(),null));
 		}
@@ -50,6 +55,12 @@ public class OrderController {
 	public ResponseEntity<ApiResponse>getUserOrders(@PathVariable int userId){
 		try {
 			List<Order> orders=orderService.getUserOrders(userId);
+			List<OrderDto>orderDtoList =new ArrayList<>();
+			orders.forEach(order->{
+				OrderDto orderDto=orderService.convertToOrderDto(order);
+				orderDtoList.add(orderDto);
+			}
+			);	
 			return ResponseEntity.ok(new ApiResponse("Order Sucess",orders));
 		} catch (ResourceNotFoundException e) {
 			return ResponseEntity.ok(new ApiResponse(e.getMessage(),null));

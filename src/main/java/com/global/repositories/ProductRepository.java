@@ -1,6 +1,7 @@
 package com.global.repositories;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -25,7 +26,7 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
 	public List<Object[]> findByName(String name);
 	
 	@Query("select p.id,p.name,p.description,p.brand,p.price,p.quantity,i.id,i.fileName,i.downloadUrl,cat from Product p join p.image i join p.category cat where p.name=:name and p.brand=:brand")
-	public List<Object[]> findByNameAndBrand(String name,String brand);
+	public Optional<List<Object[]>> findByNameAndBrand(String name,String brand);
 	
 	@Query("select p.id,p.name,p.description,p.brand,p.price,p.quantity,i.id,i.fileName,i.downloadUrl,cat from Product p join p.image i join p.category cat where cat.name=:category and p.brand=:brand")
 	public List<Object[]> findByCategoryNameAndBrand(String category, String brand);

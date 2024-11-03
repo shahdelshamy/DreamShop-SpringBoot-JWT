@@ -1,5 +1,7 @@
 package com.global.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -21,6 +23,7 @@ public class OrderItem {
 	@JoinColumn(name = "product_id")
 	private Product product;
 	
+	@JsonIgnore
 	@ManyToOne
 	@JoinColumn(name = "order_id")
 	private Order order;
@@ -34,6 +37,14 @@ public class OrderItem {
 		this.product = product;
 		this.order = order;
 	}
+
+
+	public OrderItem() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+
 
 	public int getId() {
 		return id;

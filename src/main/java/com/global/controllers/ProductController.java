@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.HttpClientErrorException.Conflict;
 
+import com.global.exceptions.AlreadyExistExeption;
 import com.global.exceptions.ResourceNotFoundException;
 import com.global.requests.AddProduct;
 import com.global.response.ApiResponse;
@@ -35,7 +36,7 @@ public class ProductController {
 	public ResponseEntity<ApiResponse>addProduct(@RequestBody AddProduct product){
 		try {
 			return ResponseEntity.ok(new ApiResponse("Sucess",productService.addProduct(product)));
-		} catch (Exception e) {
+		} catch (AlreadyExistExeption e) {
 			return ResponseEntity.status(CONFLICT).body(new ApiResponse(e.getMessage(),null));
 		}
 	}

@@ -3,6 +3,7 @@ package com.global.service.cart;
 import java.security.cert.Certificate;
 
 import com.global.models.Cart;
+import com.global.models.User;
 
 public interface CartInterface {
 	
@@ -14,7 +15,7 @@ public interface CartInterface {
 	
 	public Float getTotalPrice(int id);
 
-	int initializeCartId();
+	Cart initializeCart(User user);
 	
 	
 	

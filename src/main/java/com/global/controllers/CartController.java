@@ -20,7 +20,7 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 @RequestMapping("/api/cart")
 public class CartController {
 	
-	private static final HttpStatusCode NOT_FOUND = null;
+
 	
 	
 	@Autowired

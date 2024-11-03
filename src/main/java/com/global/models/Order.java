@@ -1,10 +1,12 @@
 package com.global.models;
 
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.global.enums.OrderStatus;
 
 import jakarta.persistence.CascadeType;
@@ -26,7 +28,7 @@ public class Order {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
-	private	Date orderDate;
+	private	LocalDate  orderDate;
 	private float totalPrice;
 	
 	@Enumerated(EnumType.STRING)
@@ -35,25 +37,37 @@ public class Order {
 	@OneToMany(cascade = CascadeType.ALL,mappedBy = "order")
 	private Set<OrderItem>orderItems=new HashSet<>();
 
+	@JsonIgnore
 	@ManyToOne()
 	@JoinColumn(name = "user_id")
 	private User user;
 	
 	
+	
+
+
+	public LocalDate getOrderDate() {
+		return orderDate;
+	}
+
+	public void setOrderDate(LocalDate orderDate) {
+		this.orderDate = orderDate;
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+
 	public int getId() {
 		return id;
 	}
 
 	public void setId(int id) {
 		this.id = id;
-	}
-
-	public Date getOderDate() {
-		return orderDate;
-	}
-
-	public void setOderDate(Date oderDate) {
-		this.orderDate = oderDate;
 	}
 
 	public float getTotalPrice() {

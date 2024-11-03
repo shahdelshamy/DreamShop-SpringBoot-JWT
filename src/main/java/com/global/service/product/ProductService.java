@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import com.global.DTO.ImageDto;
 import com.global.DTO.ProductDto;
+import com.global.exceptions.AlreadyExistExeption;
 import com.global.exceptions.ResourceNotFoundException;
 import com.global.models.Category;
 import com.global.models.Product;
@@ -32,23 +33,34 @@ public class ProductService implements ProductInterface {
 	@Override
 	public Product addProduct(AddProduct product) {
 
-		Product saveProduct=new Product();
-		
-		Optional<Category> category=categoryRepository.findByName(product.getCategory().getName());
-		if(category.isEmpty()) {
-			Category category2=new Category(product.getCategory().getName());
-			Category savedCategory=categoryRepository.save(category2);
-			saveProduct.setCategory(savedCategory);
+		Optional<List<Object[]>>productOptional=productRepository.
+										findByNameAndBrand(product.getName(), product.getBrand());
+
+		if(productOptional.isPresent()) {
+			throw new AlreadyExistExeption("This Product Is Already Exist,You Should Update it");
 		}else {
-			saveProduct.setCategory(category.get());
-		}
-		saveProduct.setBrand(product.getBrand());
-		saveProduct.setDescription(product.getDescription());
-		saveProduct.setName(product.getName());
-		saveProduct.setPrice(product.getPrice());
-		saveProduct.setQuantity(product.getQuantity());
 		
-		return productRepository.save(saveProduct);
+			Product saveProduct=new Product();
+			
+			Optional<Category> category=categoryRepository.findByName(product.getCategory().getName());
+			if(category.isEmpty()) {
+				Category category2=new Category(product.getCategory().getName());
+				Category savedCategory=categoryRepository.save(category2);
+				saveProduct.setCategory(savedCategory);
+			}else {
+				saveProduct.setCategory(category.get());
+			}
+			saveProduct.setBrand(product.getBrand());
+			saveProduct.setDescription(product.getDescription());
+			saveProduct.setName(product.getName());
+			saveProduct.setPrice(product.getPrice());
+			saveProduct.setQuantity(product.getQuantity());
+			
+			return productRepository.save(saveProduct);
+			
+		}
+		
+		
 	}
 
 	@Override
@@ -149,7 +161,7 @@ public class ProductService implements ProductInterface {
 
 	@Override
 	public List<ProductDto> getProductByNameAndBrand(String name, String brand) {
-		List<Object[]> products=productRepository.findByNameAndBrand(name,brand);
+		List<Object[]> products=productRepository.findByNameAndBrand(name,brand).get();
 		if(products.size()==0) {
 			throw new ResourceNotFoundException("Not Found Products With This Brand And Name");
 		}else {

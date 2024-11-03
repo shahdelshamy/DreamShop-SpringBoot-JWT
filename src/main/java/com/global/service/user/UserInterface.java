@@ -9,10 +9,10 @@ import com.global.requests.UserUpdateRequest;
 
 public interface UserInterface {
 	
-	UserDto getUserById(int userId);
+	User getUserById(int userId);
 	
-	UserDto createUser(UserRequest request);
-	UserDto updateUser(UserUpdateRequest request,int userId);
+	User createUser(UserRequest request);
+	User updateUser(UserUpdateRequest request,int userId);
 	void deleteUser(int id);
 
 }

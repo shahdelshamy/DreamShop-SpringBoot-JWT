@@ -22,19 +22,21 @@ public class UserService implements UserInterface{
 	@Autowired
 	private UserRepository userRepository;
 	
-	private ModelMapper modelMapper;
+	@Autowired
+	private ModelMapper modelMapper=new ModelMapper();
+
 	
 	@Override
-	public UserDto getUserById(int userId) {
+	public User getUserById(int userId) {
 		User user=userRepository.findById(userId).orElseThrow(()->
 		new ResourceNotFoundException("The User Not Found")
 		);
-		return this.convertToUserDto(user);
+		return user;
 		
 	}
 
 	@Override
-	public UserDto createUser(UserRequest request) {
+	public User createUser(UserRequest request) {
 	 Optional<User> userOptional=userRepository.findByEmail(request.getEmail());
 		if(userOptional.isEmpty()) {
 			User user=new User();
@@ -42,28 +44,28 @@ public class UserService implements UserInterface{
 			user.setLastName(request.getLastName());
 			user.setEmail(request.getEmail());
 			user.setPassword(request.getPassword());
-			userRepository.save(user);
-			return this.convertToUserDto(user);
+			
+			return userRepository.save(user);
 		}else {
 			throw new AlreadyExistExeption("This User Already Exist");
 		}
 	}
 
 	@Override
-	public UserDto updateUser(UserUpdateRequest request, int userId) {
+	public User updateUser(UserUpdateRequest request, int userId) {
 		User user=userRepository.findById(userId).orElseThrow(()->
 			new ResourceNotFoundException("The User Not Found")
 				);
 		user.setFirstName(request.getFirstName());
 		user.setLastName(request.getLastName());
 		user.setEmail(request.getEmail());
-		userRepository.save(user);
-		return this.convertToUserDto(user);
+		
+		return userRepository.save(user);
 	}
 
 	@Override
 	public void deleteUser(int id) {
-		UserDto user=this.getUserById(id);
+		User user=this.getUserById(id);
 		userRepository.deleteById(id);
 	}
 

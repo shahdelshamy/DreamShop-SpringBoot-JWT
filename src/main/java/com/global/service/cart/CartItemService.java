@@ -1,14 +1,17 @@
 package com.global.service.cart;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.global.DTO.CartItemDto;
 import com.global.exceptions.ResourceNotFoundException;
 import com.global.models.Cart;
 import com.global.models.CartItem;
 import com.global.models.Product;
 import com.global.repositories.CartItemRepository;
 import com.global.repositories.CartRepository;
+import com.global.repositories.UserRepository;
 import com.global.service.product.ProductService;
 
 import ch.qos.logback.core.joran.conditional.IfAction;
@@ -28,6 +31,12 @@ public class CartItemService implements CartItemInterface {
 	
 	@Autowired
 	private CartService cartService;
+	
+	@Autowired
+	private UserRepository userRepository;
+	
+	
+	private ModelMapper modelMapper;
 
 	@Override
 	public CartItem addCartItem(Integer cartId, Integer productId, int quantity) {
@@ -39,6 +48,7 @@ public class CartItemService implements CartItemInterface {
 		//5.if no,create new cartItem
 		
 		Cart cart=cartService.getCart(cartId);
+//		cart.setUser(userRepository.findByCartId(cartId));
 		Product product=productService.findById(productId);
 		CartItem cartItem=cart.getItems().stream().filter(item->
 					item.getProduct().getId()==(productId)
@@ -54,6 +64,7 @@ public class CartItemService implements CartItemInterface {
 		}else {
 			cartItem.setQuantity(cartItem.getQuantity()+quantity);
 		}
+		
 		cartItem.setTotalPrice();
 		cart.addItem(cartItem);
 		
@@ -114,6 +125,10 @@ public class CartItemService implements CartItemInterface {
 		
 	
 	
+	}
+
+	public CartItemDto convertToDto(CartItem item) {
+		return modelMapper.map(item, CartItemDto.class);
 	}
 	
 	
