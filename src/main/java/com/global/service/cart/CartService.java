@@ -4,12 +4,15 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.global.exceptions.ResourceNotFoundException;
 import com.global.models.Cart;
 import com.global.models.User;
 import com.global.repositories.CartRepository;
+import com.global.repositories.UserRepository;
 import com.global.requests.UserRequest;
 
 import jakarta.transaction.Transactional;
@@ -23,6 +26,9 @@ public class CartService implements CartInterface{
 	
 	@Autowired
 	private CartItemService cartItemService;
+	
+	@Autowired
+	private UserRepository userRepository;
 	
 	private AtomicInteger uniqueNumber=new AtomicInteger(); 
 	
@@ -90,6 +96,13 @@ public class CartService implements CartInterface{
 		}else {
 			return cartOptional.get();
 		}
+	}
+
+	public User getUthenticatedUser() {
+		Authentication auth=  SecurityContextHolder.getContext().getAuthentication();
+		String email=auth.getName();
+		User user=userRepository.findByEmail(email).get();
+		return user;
 	}
 	
 

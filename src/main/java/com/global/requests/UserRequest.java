@@ -1,5 +1,9 @@
 package com.global.requests;
 
+import java.util.Set;
+
+import com.global.models.Role;
+
 public class UserRequest {
 
 	
@@ -7,9 +11,17 @@ public class UserRequest {
 	private String lastName;
 	private String email;
 	private String password;
+	private Set<Role> roles;
 	
 	
 	
+	
+	public Set<Role> getRoles() {
+		return roles;
+	}
+	public void setRoles(Set<Role> roles) {
+		this.roles = roles;
+	}
 	public String getFirstName() {
 		return firstName;
 	}

@@ -14,12 +14,17 @@ import com.global.DTO.CartItemDto;
 import com.global.exceptions.ResourceNotFoundException;
 import com.global.models.Cart;
 import com.global.models.CartItem;
+import com.global.models.User;
 import com.global.response.ApiResponse;
 import com.global.service.cart.CartItemService;
 import com.global.service.cart.CartService;
 import com.global.service.user.UserService;
 
+import io.jsonwebtoken.JwtException;
+
 import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.UNAUTHORIZED;
+
 
 @RestController
 @RequestMapping("/api/cartItem")
@@ -42,12 +47,16 @@ public class CartItemController {
 			){
 		try {
 			
-			Cart cart=cartService.initializeCart(userService.getUserById(1));
+			User user=cartService.getUthenticatedUser();
+			
+			Cart cart=cartService.initializeCart(user);
 			
 			CartItem item= cartItemService.addCartItem(cart.getId(), productId, quantity);
 			return ResponseEntity.ok(new ApiResponse("Add Item Success",null)) ;
 		} catch (ResourceNotFoundException e) {
 			return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(),null));
+		}catch (JwtException e) {
+			return ResponseEntity.status(UNAUTHORIZED).body(new ApiResponse(e.getMessage(),null));
 		}
 	}
 	

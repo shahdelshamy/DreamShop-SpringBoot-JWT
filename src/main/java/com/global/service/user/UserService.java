@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.global.DTO.UserDto;
@@ -25,6 +26,8 @@ public class UserService implements UserInterface{
 	@Autowired
 	private ModelMapper modelMapper=new ModelMapper();
 
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 	
 	@Override
 	public User getUserById(int userId) {
@@ -43,7 +46,8 @@ public class UserService implements UserInterface{
 			user.setFirstName(request.getFirstName());
 			user.setLastName(request.getLastName());
 			user.setEmail(request.getEmail());
-			user.setPassword(request.getPassword());
+			user.setPassword(passwordEncoder.encode(request.getPassword()));
+			user.setRoles(request.getRoles());
 			
 			return userRepository.save(user);
 		}else {

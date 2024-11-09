@@ -3,6 +3,7 @@ package com.global.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,6 +34,7 @@ public class ProductController {
 	private ProductService productService;
 	
 	@PostMapping("/addProduct")
+	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<ApiResponse>addProduct(@RequestBody AddProduct product){
 		try {
 			return ResponseEntity.ok(new ApiResponse("Sucess",productService.addProduct(product)));
@@ -42,6 +44,7 @@ public class ProductController {
 	}
 	
 	@PutMapping("/updateProduct")
+	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<ApiResponse>updateProduct(@RequestBody AddProduct product){
 		try {
 			return ResponseEntity.ok(new ApiResponse("Sucess",productService.updateProduct(product)));
@@ -130,6 +133,7 @@ public class ProductController {
 	}
 	
 	@DeleteMapping("/delete/{id}")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public ResponseEntity<ApiResponse>deleteProduct(@PathVariable int id){
 		return ResponseEntity.ok(new ApiResponse("Deleting Sucess",null));
 	} 

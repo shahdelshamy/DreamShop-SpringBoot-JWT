@@ -36,7 +36,7 @@ public class ProductService implements ProductInterface {
 		Optional<List<Object[]>>productOptional=productRepository.
 										findByNameAndBrand(product.getName(), product.getBrand());
 
-		if(productOptional.isPresent()) {
+		if(productOptional.isPresent() && !productOptional.get().isEmpty()) {
 			throw new AlreadyExistExeption("This Product Is Already Exist,You Should Update it");
 		}else {
 		

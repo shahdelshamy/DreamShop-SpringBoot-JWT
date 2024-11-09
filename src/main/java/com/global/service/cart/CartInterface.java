@@ -15,7 +15,9 @@ public interface CartInterface {
 	
 	public Float getTotalPrice(int id);
 
-	Cart initializeCart(User user);
+	public Cart initializeCart(User user);
+	
+	public User getUthenticatedUser();
 	
 	
 	
