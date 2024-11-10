@@ -14,7 +14,6 @@ This project is a RESTful e-commerce application built using Spring Boot and sec
   - [👤 User](#user)
   - [🔐 Login](#login)
 - [🛠️ Usage Flow](#usage-flow)
-- [🚀 Setup](#setup)
 - [🎥 Video Demo](#video-demo)
 
 ## ✨ Features
@@ -86,13 +85,10 @@ _(Endpoints for managing categories if implemented)_
 3. **Placing an Order** 📑:
    - The user proceeds to place an order with items in the cart.
    - After the order is placed, items in the cart are automatically cleared.
+   - 
+## 🧪 API Testing
 
-## 🚀 Setup
-
-1. **Clone the repository**.
-2. **Configure Database** in `application.properties`.
-3. **Run the application**: `mvn spring-boot:run`.
-4. **Access API Documentation**: Use tools like Postman to interact with the endpoints.
+The API endpoints were tested using **Postman** to ensure functionality and correct responses. You can import the provided endpoints and test them in your own Postman environment.
 
 ## 🎥 Video Demo
 
